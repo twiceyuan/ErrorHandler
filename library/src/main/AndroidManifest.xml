@@ -1,0 +1,12 @@
+<manifest package="com.twiceyuan.errorhandler"
+          xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application
+        android:supportsRtl="true">
+
+        <activity android:name="com.twiceyuan.errorhandler.ReportActivity"
+                  android:theme="@style/Theme.AppCompat.NoActionBar"/>
+
+    </application>
+
+</manifest>
