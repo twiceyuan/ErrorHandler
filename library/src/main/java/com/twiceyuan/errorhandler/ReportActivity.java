@@ -5,12 +5,14 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -56,9 +58,11 @@ public class ReportActivity extends AppCompatActivity {
         builder.setView(container);
         builder.setNeutralButton("查看错误信息", null);
         builder.setPositiveButton("好的", null);
+        builder.setNegativeButton("打印日志", null);
 
         builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override public void onCancel(DialogInterface dialog) {
+                dialog.dismiss();
                 finish();
             }
         });
@@ -85,13 +89,17 @@ public class ReportActivity extends AppCompatActivity {
 
         dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
+                dialog.dismiss();
                 finish();
             }
         });
-    }
 
-    private void setText(TextView textView, String s) {
-        textView.setText(s);
+        dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                Log.e("ReportActivity", "手动打印日志", error);
+                Toast.makeText(ReportActivity.this, "日志已打印", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private String stackTrace(Throwable throwable) {
