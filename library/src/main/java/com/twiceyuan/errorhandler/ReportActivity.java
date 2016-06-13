@@ -1,13 +1,12 @@
 package com.twiceyuan.errorhandler;
 
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ScrollView;
@@ -25,32 +24,35 @@ import java.io.StringWriter;
  */
 public class ReportActivity extends AppCompatActivity {
 
-    public static final String EXTRA_ERROR = "error_info";
-
-    public static void start(Context context, Throwable error) {
-        Intent starter = new Intent(context, ReportActivity.class);
-        starter.putExtra(EXTRA_ERROR, error);
-        starter.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(starter);
-    }
-
     @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report);
 
-        final Throwable error = (Throwable) getIntent().getSerializableExtra(EXTRA_ERROR);
+        final Throwable error = (Throwable) getIntent().getSerializableExtra(ErrorHandler.ERROR_CAUSE);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         final ScrollView container = new ScrollView(this);
-        final TextView textError = new TextView(this);
-        textError.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-        textError.setBackgroundColor(0xFF2B2B2B);
-        textError.setTextColor(0xFFFF6B68);
-        container.addView(textError);
+        final TextView textErrorInfo = new TextView(this);
+        final TextView textMessage = new TextView(this);
 
-        container.setPadding(dp(4), dp(4), dp(4), dp(4));
-        textError.setPadding(dp(16), dp(16), dp(16), dp(16));
-        setText(textError, "错误信息已收集");
+        textErrorInfo.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+        textErrorInfo.setBackgroundColor(0xFF2B2B2B);
+
+        textErrorInfo.setTextColor(0xFFFF6B68);
+
+        int dp4 = dp(4);
+        int dp16 = dp(16);
+
+        textMessage.setPadding(dp16, dp16, dp16, dp16);
+        textMessage.setGravity(Gravity.CENTER);
+        textMessage.setText("错误信息已收集");
+
+        textErrorInfo.setPadding(dp16, dp16, dp16, dp16);
+        textErrorInfo.setText(stackTrace(error));
+
+        container.addView(textMessage);
+        container.setPadding(dp4, dp4, dp4, dp4);
+
         builder.setView(container);
         builder.setNeutralButton("查看错误信息", null);
         builder.setPositiveButton("好的", null);
@@ -61,7 +63,7 @@ public class ReportActivity extends AppCompatActivity {
             }
         });
 
-        AlertDialog dialog = builder.create();
+        final AlertDialog dialog = builder.create();
         dialog.setCanceledOnTouchOutside(true);
         dialog.show();
 
@@ -70,10 +72,12 @@ public class ReportActivity extends AppCompatActivity {
         dialog.getButton(DialogInterface.BUTTON_NEUTRAL).setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
                 if (button.getText().toString().equals("查看错误信息")) {
-                    setText(textError, stackTrace(error));
+                    container.removeAllViews();
+                    container.addView(textErrorInfo);
                     button.setText("隐藏错误信息");
                 } else {
-                    setText(textError, "错误信息已收集");
+                    container.removeAllViews();
+                    container.addView(textMessage);
                     button.setText("查看错误信息");
                 }
             }

@@ -1,6 +1,8 @@
 package com.twiceyuan.errorhandler;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Looper;
 import android.util.Log;
 
@@ -8,23 +10,26 @@ import android.util.Log;
  * Created by twiceYuan on 6/12/16.
  * Email: i@twiceyuan.com
  * Site: http://twiceyuan.com
- * <p/>
+ * <p>
  * 错误拦截器
  */
 public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 
+    public static final String ERROR_CAUSE = "ErrorHandler_ErrorCause";
+
     private Thread.UncaughtExceptionHandler mDefaultHandler;
-    private Context                         mContext;
+
+    /**
+     * 接收主线程错误处理的 Activity
+     */
+    private Class<? extends Activity> mMainHandler = ReportActivity.class; // 默认的 Activity Handler
+
+    private Context mContext;
 
     /**
      * 异常 handler map，存储从 throwable -> exception handler 的映射
      */
     private ExceptionMap mExceptionMap;
-
-    /**
-     * 主线程的异常处理
-     */
-    private ExceptionListener<Throwable> mMainThreadListener;
 
     public static ErrorHandler getInstance() {
         return Singleton.sInstance;
@@ -47,8 +52,13 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 
     @Override public void uncaughtException(Thread thread, final Throwable ex) {
 
-        if (thread == Looper.getMainLooper().getThread() && mMainThreadListener != null) {
-            mMainThreadListener.handle(ex);
+        if (thread == Looper.getMainLooper().getThread() && mMainHandler != null) {
+            // 新建一个 Task，跳转到接收主线程错误的 Activity，并结束当前线程
+            Intent intent = new Intent(mContext, mMainHandler);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra(ERROR_CAUSE, ex);
+            mContext.startActivity(intent);
+
             android.os.Process.killProcess(android.os.Process.myPid());
             System.exit(10);
         }
@@ -78,12 +88,12 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
         Singleton.sInstance.addHandlerMethod(tClass, listener);
     }
 
-    public static void addMainThreadHandler(ExceptionListener<Throwable> listener) {
-        Singleton.sInstance.addMainThreadHandlerMethod(listener);
-    }
-
-    private void addMainThreadHandlerMethod(ExceptionListener<Throwable> listener) {
-        mMainThreadListener = listener;
+    /**
+     * 设置接收主线程 Exception 的 Activity
+     * @param activityClass 接收主线程的 Activity 的 class
+     */
+    public static void setMainThreadHandler(Class<Activity> activityClass) {
+        Singleton.sInstance.mMainHandler = activityClass;
     }
 
     private <T extends Throwable> void addHandlerMethod(Class<T> tClass, ExceptionListener<T> listener) {

@@ -6,7 +6,6 @@ import android.widget.Toast;
 
 import com.twiceyuan.errorhandler.ErrorHandler;
 import com.twiceyuan.errorhandler.ExceptionListener;
-import com.twiceyuan.errorhandler.ReportActivity;
 import com.twiceyuan.errorhandler.sample.exceptions.FirstException;
 import com.twiceyuan.errorhandler.sample.exceptions.SecondException;
 
@@ -46,14 +45,6 @@ public class App extends Application {
         ErrorHandler.addHandler(NullPointerException.class, new ExceptionListener<NullPointerException>() {
             @Override public void handle(NullPointerException e) {
                 Toast.makeText(getInstance(), "NullPointerException", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        // 主线程的全局异常，必须在一个新的 Task 中进行处理。
-        ErrorHandler.addMainThreadHandler(new ExceptionListener<Throwable>() {
-            @Override public void handle(Throwable throwable) {
-                ReportActivity.start(getInstance(), throwable);
-                // 其他错误收集操作。比如缓存本地、提交给错误统计服务器等
             }
         });
     }
