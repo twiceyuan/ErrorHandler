@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.widget.Toast;
 
+import com.twiceyuan.errorhandler.DebugDialog;
 import com.twiceyuan.errorhandler.ErrorHandler;
 import com.twiceyuan.errorhandler.ExceptionListener;
 import com.twiceyuan.errorhandler.sample.exceptions.FirstException;
@@ -38,7 +39,9 @@ public class App extends Application {
 
         ErrorHandler.addHandler(SecondException.class, new ExceptionListener<SecondException>() {
             @Override public void handle(SecondException e) {
-                Toast.makeText(getInstance(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                if (BuildConfig.DEBUG) {
+                    DebugDialog.show(e);
+                }
             }
         });
 

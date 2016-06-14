@@ -41,6 +41,10 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
         mExceptionMap = new ExceptionMap<>();
     }
 
+    public Context getContext() {
+        return mContext;
+    }
+
     private static class Singleton {
         private static final ErrorHandler sInstance = new ErrorHandler();
     }
@@ -94,6 +98,16 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
      */
     public static void setMainThreadHandler(Class<Activity> activityClass) {
         Singleton.sInstance.mMainHandler = activityClass;
+    }
+
+    /**
+     * FcHandlerActivity 中获得 Throwable 对象
+     *
+     * @param fcHandlerActivity 接收主线程崩溃信息的 Activity
+     * @return 崩溃信息的 FC 异常
+     */
+    public static Throwable getThrowable(Activity fcHandlerActivity) {
+        return (Throwable) fcHandlerActivity.getIntent().getSerializableExtra(ERROR_CAUSE);
     }
 
     private <T extends Throwable> void addHandlerMethod(Class<T> tClass, ExceptionListener<T> listener) {

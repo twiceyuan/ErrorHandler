@@ -7,6 +7,9 @@
         <activity android:name="com.twiceyuan.errorhandler.ReportActivity"
                   android:theme="@style/Theme.AppCompat.NoActionBar"/>
 
+        <activity android:name=".BackgroundActivity"
+                  android:theme="@style/Theme.AppCompat.Light.Dialog"/>
+
     </application>
 
 </manifest>
