@@ -1,5 +1,9 @@
 # ErrorHandler
 
+[![](https://jitpack.io/v/twiceyuan/ErrorHandler.svg)](https://jitpack.io/#twiceyuan/ErrorHandler)
+
+[![](art/logo.png)](./)
+
 Android 全局异常处理，通过封装 Thread.UncaughtExceptionHandler 实现。通过方便的设定即可在全局对统一的异常做处理，并可以方便拦截主线程异常（FC），定制自己的 FC 界面。
 
 ## 使用
@@ -25,6 +29,10 @@ void setMainThreadHandler(Class<Activity> activityClass);
 ```
 
 然后在这个 Activity 中，可以通过`ErrorHandler.getThrowable(this)` 来获得 Throwable 对象，对其做自定义的处理。
+
+## 截图
+
+![错误日志对话框](art/screenshot.png) 
 
 # License
 ```
