@@ -13,10 +13,8 @@ ErrorHandler.init(this);
 非主线程的异常处理（不会造成 FC 的异常），例如网络中断，服务端返回错误的自定义异常封装
 
 ```java
-ErrorHandler.addHandler(FirstException.class, new ExceptionListener<SecondException>() {
-    @Override public void handle(SecondException e) {
-        Toast.makeText(App.getApplication(), e.getMessage(), Toast.LENGTH_SHORT).show();
-    }
+ErrorHandler.addHandler(FirstException.class, exception -> {
+    Toast.makeText(App.getApplication(), exception.getMessage(), Toast.LENGTH_SHORT).show();
 });
 ```
 
