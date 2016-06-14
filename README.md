@@ -26,6 +26,10 @@ void setMainThreadHandler(Class<Activity> activityClass);
 
 然后在这个 Activity 中，可以通过`ErrorHandler.getThrowable(this)` 来获得 Throwable 对象，对其做自定义的处理。
 
+## 截图
+
+![错误日志对话框](art/screenshot.png) 
+
 # License
 ```
 Copyright 2016 twiceYuan.
