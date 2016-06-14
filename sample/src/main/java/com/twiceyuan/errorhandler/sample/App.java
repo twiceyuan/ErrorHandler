@@ -44,11 +44,5 @@ public class App extends Application {
                 }
             }
         });
-
-        ErrorHandler.addHandler(NullPointerException.class, new ExceptionListener<NullPointerException>() {
-            @Override public void handle(NullPointerException e) {
-                Toast.makeText(getInstance(), "NullPointerException", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 }
